@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { DataTypes, Model, ModelDefined, Op, Optional } from 'sequelize';
 import { createSequelize6Instance } from '../setup/create-sequelize-instance';
 import { expect } from 'chai';
@@ -99,6 +101,7 @@ export async function run() {
 
   // You can also set multiple attributes optional at once
   type UserCreationAttributes = Optional<UserAttributes, 'id' | 'name' | 'username' | 'favoriteColor' | 'age' | 'password'>;
+
   const User: ModelDefined<
     UserAttributes,
     UserCreationAttributes
@@ -291,21 +294,116 @@ export async function run() {
 
 
 
-  const Toto = sequelize.define('Toto', {
-    name: DataTypes.STRING,
-    description: DataTypes.STRING,
-  });
+  // const Team = sequelize.define('Team', {
+  //   name: DataTypes.STRING,
+  //   level: DataTypes.INTEGER,
+  // });
 
 
-  const Bar = sequelize.define('Bar', {
-    name: DataTypes.STRING,
-    address: DataTypes.STRING,
-  });
+  // const Player = sequelize.define('Player', {
+  //   firstname: DataTypes.STRING,
+  //   lastname: DataTypes.STRING,
+  // });
 
 
-  Toto.hasOne(Bar);
-  Bar.belongsTo(Toto);
+  // Toto.hasOne(Bar);
+  // Bar.belongsTo(Toto);
 
+  // Team.hasMany,(Player);
+  // Player.belongsTo(Team);
+
+
+  // const Movie = sequelize.define('Movie', { name: DataTypes.STRING });
+  // const Actor = sequelize.define('Actor', { name: DataTypes.STRING });
+
+  // Movie.belongsToMany(Actor, { through: 'ActorMovies' });
+  // Actor.belongsToMany(Movie, { through: 'ActorMovies' });
+
+
+  // This is the setup of our models for the examples below
+
+  // You can also define modules in a functional way
+  //   interface CaptainAttributes {
+  //     id: number,
+  //     name: string,
+  //     skillLevel: number
+  //   }
+
+  //   // const saltRounds = 10
+
+
+  //   // You can also set multiple attributes optional at once
+  //   type CaptainCreationAttributes = Optional<CaptainAttributes, 'id'>;
+
+
+  //   const Ship = sequelize.define('ship', {
+  //     name: DataTypes.TEXT,
+  //     crewCapacity: DataTypes.INTEGER,
+  //     amountOfSails: DataTypes.INTEGER
+  //   }, { timestamps: false });
+
+  //   const Captain : ModelDefined<
+  //   CaptainAttributes,
+  //   CaptainCreationAttributes
+  // > = sequelize.define('captain', {
+  //     name: DataTypes.TEXT,
+  //     skillLevel: {
+  //       type: DataTypes.INTEGER,
+  //       validate: { min: 1, max: 10 }
+  //     }
+  //   }, { timestamps: false });
+  //   Captain.hasOne(Ship);
+  //   Ship.belongsTo(Captain);
+
+  //   await Captain.create({ name: 'Jack Sparrow', skillLevel: 7 });
+  //   await Captain.create({ name: 'Jack Diamond', skillLevel: 7 });
+  //   await Captain.create({ name: 'Oussama GHOUAGH', skillLevel: 7, Ship : { name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 } }, { include: Captain.Ship} );
+
+
+  //   //await Ship.create({ name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 });
+
+
+
+  //   const awesomeCaptain = await Captain.findOne({
+  //     where: {
+  //       name: "Oussama GHOUAGH"
+  //     }
+  //   });
+
+  //   console.log('Captain:', awesomeCaptain);
+
+  // const hisShip = await awesomeCaptain!.getShip();
+  // console.log('Ship Name:', hisShip);
+
+
+  //------- Example from stack --------- //
+
+
+  class Sports extends Model {}
+
+  Sports.init({
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false
+    }
+  }, { sequelize, tableName: 'sports' });
+
+  class Leagues extends Model {}
+
+  Leagues.init({
+    name: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false
+    }
+  }, { sequelize, tableName: 'leagues' });
+
+  Sports.Leagues = Sports.hasMany(Leagues, {foreignKey: {name: "sports_id", allowNull: false}, sourceKey: "id"});
+  Leagues.Sports = Leagues.belongsTo(Sports, {foreignKey: {name: "sports_id", allowNull: false}, targetKey: "id"});
+
+
+  await Leagues.create({name: "leagueName", espn_name: "espnName", Sport: {name: "Basketball"}}, {include: Leagues.Sports});
 
 
   // You can use sinon and chai assertions directly in your SSCCE.
