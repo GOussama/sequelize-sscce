@@ -333,38 +333,38 @@ export async function run() {
 
 
   //   // You can also set multiple attributes optional at once
-  //   type CaptainCreationAttributes = Optional<CaptainAttributes, 'id'>;
+    type CaptainCreationAttributes = Optional<CaptainAttributes, 'id'>;
 
 
-  //   const Ship = sequelize.define('ship', {
-  //     name: DataTypes.TEXT,
-  //     crewCapacity: DataTypes.INTEGER,
-  //     amountOfSails: DataTypes.INTEGER
-  //   }, { timestamps: false });
+    const Ships = sequelize.define('Ships', {
+      name: DataTypes.TEXT,
+      crewCapacity: DataTypes.INTEGER,
+      amountOfSails: DataTypes.INTEGER
+    }, { timestamps: false });
 
-  //   const Captain : ModelDefined<
-  //   CaptainAttributes,
-  //   CaptainCreationAttributes
-  // > = sequelize.define('captain', {
-  //     name: DataTypes.TEXT,
-  //     skillLevel: {
-  //       type: DataTypes.INTEGER,
-  //       validate: { min: 1, max: 10 }
-  //     }
-  //   }, { timestamps: false });
-  //   Captain.hasOne(Ship);
-  //   Ship.belongsTo(Captain);
+    const Captains : ModelDefined<
+    CaptainAttributes,
+    CaptainCreationAttributes
+  > = sequelize.define('Captains', {
+      name: DataTypes.TEXT,
+      skillLevel: {
+        type: DataTypes.INTEGER,
+        validate: { min: 1, max: 10 }
+      }
+    }, { timestamps: false });
+    Captains.Ships = Captains.hasOne(Ships);
+    Ships.Captains = Ships.belongsTo(Captains);
 
-  //   await Captain.create({ name: 'Jack Sparrow', skillLevel: 7 });
-  //   await Captain.create({ name: 'Jack Diamond', skillLevel: 7 });
-  //   await Captain.create({ name: 'Oussama GHOUAGH', skillLevel: 7, Ship : { name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 } }, { include: Captain.Ship} );
-
-
-  //   //await Ship.create({ name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 });
+    // await Captain.create({ name: 'Jack Sparrow', skillLevel: 7 });
+    // await Captain.create({ name: 'Jack Diamond', skillLevel: 7 });
+   // await Captains.create({ name: 'Oussama GHOUAGH', skillLevel: 7, Ship : { name: 'Black eyes 2', crewCapacity: 10, amountOfSails: 3 } }, { include: Captains.Ships} );
 
 
+    //await Ship.create({ name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 });
 
-  //   const awesomeCaptain = await Captain.findOne({
+
+
+  //   const awesomeCaptain = await Captains.findOne({
   //     where: {
   //       name: "Oussama GHOUAGH"
   //     }
@@ -373,37 +373,56 @@ export async function run() {
   //   console.log('Captain:', awesomeCaptain);
 
   // const hisShip = await awesomeCaptain!.getShip();
-  // console.log('Ship Name:', hisShip);
+  // console.log('------- Ship Name:', hisShip.name);
+
+
+
+  const awesomeCaptain = await Captains.findOne({
+    where: {
+      name: "Oussama GHOUAGH"
+    },
+    include: Ships
+  });
+
+  //console.log('++++++++++ Name:', awesomeCaptain);
+
+  // Now the ship comes with it
+  console.log('Name:', awesomeCaptain.name);
+  console.log('Skill Level:', awesomeCaptain.skillLevel);
+  console.log('Ship Name:', awesomeCaptain.Ship.name);
+  console.log('Amount of Sails:', awesomeCaptain.Ship.amountOfSails);
+
+
 
 
   //------- Example from stack --------- //
 
 
-  class Sports extends Model {}
+  // class Sports extends Model {}
 
-  Sports.init({
-    name: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false
-    }
-  }, { sequelize, tableName: 'sports' });
+  // Sports.init({
+  //   name: {
+  //     type: DataTypes.STRING,
+  //     unique: true,
+  //     allowNull: false
+  //   }
+  // }, { sequelize, tableName: 'sports' });
 
-  class Leagues extends Model {}
+  // class Leagues extends Model {}
 
-  Leagues.init({
-    name: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false
-    }
-  }, { sequelize, tableName: 'leagues' });
+  // Leagues.init({
+  //   name: {
+  //     type: DataTypes.STRING,
+  //     unique: true,
+  //     allowNull: false
+  //   }
+  // }, { sequelize, tableName: 'leagues' });
 
-  Sports.Leagues = Sports.hasMany(Leagues, {foreignKey: {name: "sports_id", allowNull: false}, sourceKey: "id"});
-  Leagues.Sports = Leagues.belongsTo(Sports, {foreignKey: {name: "sports_id", allowNull: false}, targetKey: "id"});
+  // Sports.Leagues = Sports.hasMany(Leagues, {foreignKey: {name: "sports_id", allowNull: false}, sourceKey: "id"});
+  // Leagues.Sports = Leagues.belongsTo(Sports, {foreignKey: {name: "sports_id", allowNull: false}, targetKey: "id"});
 
 
-  await Leagues.create({name: "leagueName", espn_name: "espnName", Sport: {name: "Basketball"}}, {include: Leagues.Sports});
+  // await Leagues.create({name: "Champion's league 3", Sport: {name: "Soccer 3"}}, {include: Leagues.Sports});
 
 
   // You can use sinon and chai assertions directly in your SSCCE.
