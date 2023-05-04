@@ -87,14 +87,14 @@ export async function run() {
   //   }
 
   // You can also define modules in a functional way
-  interface UserAttributes {
-    id: number,
-    name: string,
-    username: string,
-    favoriteColor: string,
-    age: number;
-    password: string
-  }
+  // interface UserAttributes {
+  //   id: number,
+  //   name: string,
+  //   username: string,
+  //   favoriteColor: string,
+  //   age: number;
+  //   password: string
+  // }
 
   // const saltRounds = 10
 
@@ -102,25 +102,25 @@ export async function run() {
   // You can also set multiple attributes optional at once
   type UserCreationAttributes = Optional<UserAttributes, 'id' | 'name' | 'username' | 'favoriteColor' | 'age' | 'password'>;
 
-  const User: ModelDefined<
-    UserAttributes,
-    UserCreationAttributes
-  > = sequelize.define("User", {
-    name: DataTypes.TEXT,
-    favoriteColor: {
-      type: DataTypes.TEXT,
-      defaultValue: 'green'
-    },
-    username: {
-      type: DataTypes.STRING,
-      get() {
-        const rawValue = this.getDataValue('username');
-        return rawValue ? rawValue.toUpperCase() : null;
-      }
-    },
-    age: DataTypes.INTEGER,
-    cash: DataTypes.INTEGER
-  });
+  // const User: ModelDefined<
+  //   UserAttributes,
+  //   UserCreationAttributes
+  // > = sequelize.define("User", {
+  //   name: DataTypes.TEXT,
+  //   favoriteColor: {
+  //     type: DataTypes.TEXT,
+  //     defaultValue: 'green'
+  //   },
+  //   username: {
+  //     type: DataTypes.STRING,
+  //     get() {
+  //       const rawValue = this.getDataValue('username');
+  //       return rawValue ? rawValue.toUpperCase() : null;
+  //     }
+  //   },
+  //   age: DataTypes.INTEGER,
+  //   cash: DataTypes.INTEGER
+  // });
 
   // const Student = sequelize.define('student', {
   //   username: DataTypes.STRING,
@@ -333,37 +333,39 @@ export async function run() {
 
 
   //   // You can also set multiple attributes optional at once
-    type CaptainCreationAttributes = Optional<CaptainAttributes, 'id'>;
+  //   type CaptainCreationAttributes = Optional<CaptainAttributes, 'id'>;
 
 
-    const Ships = sequelize.define('Ships', {
-      name: DataTypes.TEXT,
-      crewCapacity: DataTypes.INTEGER,
-      amountOfSails: DataTypes.INTEGER
-    }, { timestamps: false });
+  //   const Ships = sequelize.define('Ships', {
+  //     name: DataTypes.TEXT,
+  //     crewCapacity: DataTypes.INTEGER,
+  //     amountOfSails: DataTypes.INTEGER
+  //   }, { timestamps: false });
 
-    const Captains : ModelDefined<
-    CaptainAttributes,
-    CaptainCreationAttributes
-  > = sequelize.define('Captains', {
-      name: DataTypes.TEXT,
-      skillLevel: {
-        type: DataTypes.INTEGER,
-        validate: { min: 1, max: 10 }
-      }
-    }, { timestamps: false });
-    Captains.Ships = Captains.hasOne(Ships);
-    Ships.Captains = Ships.belongsTo(Captains);
-
-    // await Captain.create({ name: 'Jack Sparrow', skillLevel: 7 });
-    // await Captain.create({ name: 'Jack Diamond', skillLevel: 7 });
-   // await Captains.create({ name: 'Oussama GHOUAGH', skillLevel: 7, Ship : { name: 'Black eyes 2', crewCapacity: 10, amountOfSails: 3 } }, { include: Captains.Ships} );
+  //   const Captains : ModelDefined<
+  //   CaptainAttributes,
+  //   CaptainCreationAttributes
+  // > = sequelize.define('Captains', {
+  //     name: DataTypes.TEXT,
+  //     skillLevel: {
+  //       type: DataTypes.INTEGER,
+  //       validate: { min: 1, max: 10 }
+  //     }
+  //   }, { timestamps: false });
 
 
-    //await Ship.create({ name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 });
+  //   Captains.Ships = Captains.hasOne(Ships);
+  //   Ships.Captains = Ships.belongsTo(Captains);
+
+  // await Captain.create({ name: 'Jack Sparrow', skillLevel: 7 });
+  // await Captain.create({ name: 'Jack Diamond', skillLevel: 7 });
+  // await Captains.create({ name: 'Oussama GHOUAGH', skillLevel: 7, Ship : { name: 'Black eyes 2', crewCapacity: 10, amountOfSails: 3 } }, { include: Captains.Ships} );
 
 
+  //await Ship.create({ name: 'Black eyes', crewCapacity: 10, amountOfSails: 3 });
 
+
+  //   // lazy loading
   //   const awesomeCaptain = await Captains.findOne({
   //     where: {
   //       name: "Oussama GHOUAGH"
@@ -377,20 +379,22 @@ export async function run() {
 
 
 
-  const awesomeCaptain = await Captains.findOne({
-    where: {
-      name: "Oussama GHOUAGH"
-    },
-    include: Ships
-  });
+  // // eager loading
 
-  //console.log('++++++++++ Name:', awesomeCaptain);
+  // const awesomeCaptain = await Captains.findOne({
+  //   where: {
+  //     name: "Oussama GHOUAGH"
+  //   },
+  //   include: Ships
+  // });
 
-  // Now the ship comes with it
-  console.log('Name:', awesomeCaptain.name);
-  console.log('Skill Level:', awesomeCaptain.skillLevel);
-  console.log('Ship Name:', awesomeCaptain.Ship.name);
-  console.log('Amount of Sails:', awesomeCaptain.Ship.amountOfSails);
+  // console.log('++++++++++ Name:', awesomeCaptain);
+
+  // //Now the ship comes with it
+  // console.log('Name:', awesomeCaptain.name);
+  // console.log('Skill Level:', awesomeCaptain.skillLevel);
+  // console.log('Ship Name:', awesomeCaptain.Ship.name);
+  // console.log('Amount of Sails:', awesomeCaptain.Ship.amountOfSails);
 
 
 
@@ -423,6 +427,93 @@ export async function run() {
 
 
   // await Leagues.create({name: "Champion's league 3", Sport: {name: "Soccer 3"}}, {include: Leagues.Sports});
+
+
+
+  //---------------------Association Aliases & Custom Foreign Keys
+
+
+
+  //const Ship = sequelize.define('ship', { name: DataTypes.TEXT }, { timestamps: false });
+  //const Captain = sequelize.define('captain', { name: DataTypes.TEXT }, { timestamps: false });
+
+
+  //Ship.belongsTo(Captain); // This creates the `captainId` foreign key in Ship.
+
+
+  //await Captain.create({ name: 'Oussama GHOUAGH', Ship : { name: 'Black diamond'}}, { include: Ship});
+  //await Captain.create({ name: 'Oussama GHOUAGH', Ship : { name: 'Black diamond'} }, { include: Ship} );
+  //await Ship.create({ name: 'Black diamond' , Captain : {name: 'Youssef GHOUAGH'}},{ include: Captain} );
+  // const myships = await Ship.findAll({ include: Captain })
+  // // Eager Loading is done by passing the model to `include`:
+  // console.log("myships------------", myships);
+  // // Or by providing the associated model name:
+
+
+  // const myshipsIdent = await Ship.findAll({ include: 'captain' });
+
+  // console.log("myshipsIdent------------", myshipsIdent);
+
+
+  // const ship = Ship.findOne();
+  // console.log("ship---------",(await ship.getCaptain()).toJSON());
+
+  // // Also, instances obtain a `getCaptain()` method for Lazy Loading:
+  // const ship = Ship.findOne();
+  // console.log((await ship.getCaptain()).toJSON());
+
+
+  // defining an alias
+
+
+
+  class Foo extends Model { }
+
+  Foo.init({
+    name: DataTypes.TEXT,
+  }, {
+    sequelize,
+    modelName: 'Foo',
+  });
+
+
+  class Bar extends Model { }
+
+
+  Bar.init({
+    name: DataTypes.TEXT,
+  }, {
+    sequelize,
+    modelName: 'Bar',
+  });
+
+  // Has one
+
+  // Foo.hasOne(Bar);
+
+  // const foo = await Foo.create({ name: 'the-foo' });
+  // const bar1 = await Bar.create({ name: 'some-bar' });
+  // const bar2 = await Bar.create({ name: 'another-bar' });
+
+
+  // console.log("foo.getBar()------------", await foo.getBar());
+  // await foo.setBar(bar1);
+  // console.log("foo.getBar()).name -------", (await foo.getBar()).name); // 'some-bar'
+
+  // await foo.createBar({ name: 'yet-another-bar' });
+
+
+  // Belongs to
+
+  Foo.belongsTo(Bar)
+
+  const foo = await Foo.create({ name: 'the-foo' });
+  const bar1 = await Bar.create({ name: 'some-bar' });
+  const bar2 = await Bar.create({ name: 'another-bar' });
+
+  await foo.createBar(bar1);
+  await foo.createBar(bar2);
+
 
 
   // You can use sinon and chai assertions directly in your SSCCE.
